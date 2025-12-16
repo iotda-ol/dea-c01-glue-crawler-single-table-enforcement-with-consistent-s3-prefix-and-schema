@@ -1,0 +1,2 @@
+# dea-c01-glue-crawler-single-table-enforcement-with-consistent-s3-prefix-and-schema
+This repository demonstrates how to configure AWS Glue Crawlers to create a single table from third-party data stored in Amazon S3. It enforces consistent file format, compression, and schema, and uses a stable S3 prefix structure to prevent unintended table splits. Terraform examples and best practices align with DEA-C01.
