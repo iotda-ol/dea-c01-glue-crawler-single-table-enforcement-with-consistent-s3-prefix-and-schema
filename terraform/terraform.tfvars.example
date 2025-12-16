@@ -1,0 +1,48 @@
+# Example Terraform variables file
+# Copy this file to terraform.tfvars and customize for your environment
+
+# AWS Configuration
+aws_region  = "us-east-1"
+environment = "dev"
+
+# Project Configuration
+project_name = "glue-single-table"
+
+# S3 Configuration
+# CRITICAL: Keep this prefix consistent across all data files
+# Do NOT use multiple prefixes or date-based partitions at this level
+s3_data_prefix = "third-party-data"
+
+# Crawler Configuration
+# Exclude temporary and metadata files to avoid schema confusion
+crawler_exclusions = [
+  "**/_temporary/**",
+  "**/.spark/**",
+  "**/_SUCCESS",
+  "**/.metadata/**"
+]
+
+# Schema Management
+# UPDATE_IN_DATABASE: Automatically add new columns to existing table
+schema_update_behavior = "UPDATE_IN_DATABASE"
+
+# LOG: Log deleted columns but don't remove from table
+# Recommended for production to avoid accidental data loss
+schema_delete_behavior = "LOG"
+
+# Recrawl Configuration
+# CRAWL_NEW_FOLDERS_ONLY: More efficient, only scans new data
+recrawl_behavior = "CRAWL_NEW_FOLDERS_ONLY"
+
+# Table Grouping
+# Lower threshold (0.7-0.8): More aggressive grouping, creates fewer tables
+# Higher threshold (0.9-1.0): Stricter matching, may create multiple tables
+# Recommended: 0.8 for most use cases
+table_similarity_threshold = 0.8
+
+# Crawler Schedule (optional)
+# Examples:
+#   Daily at 1 AM UTC: "cron(0 1 * * ? *)"
+#   Every 6 hours: "cron(0 */6 * * ? *)"
+#   Leave empty for manual execution only
+crawler_schedule = ""

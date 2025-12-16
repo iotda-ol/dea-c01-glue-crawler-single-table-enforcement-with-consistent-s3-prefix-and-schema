@@ -1,0 +1,8 @@
+# Python dependencies for sample data generation and S3 upload
+
+# AWS SDK
+boto3>=1.28.0
+
+# Data processing (optional, only needed for Parquet generation)
+pandas>=2.0.0
+pyarrow>=12.0.0
