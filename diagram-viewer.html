@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Infrastructure Diagram - Multi-Cloud Architecture</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .cloud-badges {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge-aws {
+            background-color: #FF9900;
+            color: #232F3E;
+        }
+        .badge-gcp {
+            background-color: #4285F4;
+            color: white;
+        }
+        .badge-azure {
+            background-color: #0078D4;
+            color: white;
+        }
+        .badge-universal {
+            background-color: #2ea44f;
+            color: white;
+        }
+        .info-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+        #diagram {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .legend-item {
+            padding: 12px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .legend-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Universal Infrastructure Diagram</h1>
+        <p style="font-size: 18px; color: #555;">
+            Multi-Cloud Data Catalog and ETL Architecture Mapping
+        </p>
+        
+        <div class="cloud-badges">
+            <span class="badge badge-aws">☁️ AWS</span>
+            <span class="badge badge-gcp">☁️ Google Cloud</span>
+            <span class="badge badge-azure">☁️ Microsoft Azure</span>
+            <span class="badge badge-universal">🌐 Universal Design</span>
+        </div>
+
+        <div class="info-box">
+            <h3>📋 About This Diagram</h3>
+            <p>
+                This diagram illustrates the universal infrastructure components for a data catalog and ETL solution,
+                showing how AWS Glue Crawler components map to equivalent services in Google Cloud Platform (GCP)
+                and Microsoft Azure. The design ensures single table enforcement across all platforms.
+            </p>
+        </div>
+
+        <div id="diagram" class="mermaid">
+graph TB
+    subgraph UNIVERSAL["🌐 Universal Architecture Components"]
+        direction TB
+        
+        subgraph STORAGE["Object Storage Layer"]
+            S3["AWS: S3 Bucket<br/>GCP: Cloud Storage Bucket<br/>Azure: Blob Storage"]
+            PREFIX["Consistent Prefix Structure<br/>third-party-data/"]
+            ENCRYPT["Encryption at Rest<br/>AWS: AES256/KMS<br/>GCP: CMEK/Google-managed<br/>Azure: SSE/Customer-managed"]
+            VERSION["Versioning<br/>All: Enabled for data protection"]
+        end
+        
+        subgraph CATALOG["Data Catalog Layer"]
+            CATALOG_DB["Metadata Database<br/>AWS: Glue Data Catalog<br/>GCP: Dataplex/Data Catalog<br/>Azure: Purview Data Catalog"]
+            SCHEMA["Schema Registry<br/>- Column definitions<br/>- Data types<br/>- Metadata"]
+            TABLE["Single Table Metadata<br/>Format: CSV/JSON/Parquet<br/>Compression: gzip/snappy"]
+        end
+        
+        subgraph CRAWLER["Schema Discovery & ETL"]
+            CRAWLER_SVC["Crawler/Discovery Service<br/>AWS: Glue Crawler<br/>GCP: Dataplex Auto Discovery<br/>Azure: Purview Scanner"]
+            MERGE["Schema Merge Policy<br/>- CombineCompatibleSchemas<br/>- MergeNewColumns<br/>- Similarity Threshold: 0.8"]
+            POLICY["Recrawl Policy<br/>- Incremental scan only<br/>- Skip unchanged data"]
+        end
+        
+        subgraph IAM["Identity & Access Management"]
+            ROLE["Service Role/Identity<br/>AWS: IAM Role<br/>GCP: Service Account<br/>Azure: Managed Identity"]
+            PERMS["Permissions<br/>- Read/Write Storage<br/>- Catalog Access<br/>- Logging"]
+        end
+        
+        subgraph MONITORING["Observability"]
+            LOGS["Logging Service<br/>AWS: CloudWatch Logs<br/>GCP: Cloud Logging<br/>Azure: Monitor Logs"]
+            METRICS["Metrics & Monitoring<br/>AWS: CloudWatch<br/>GCP: Cloud Monitoring<br/>Azure: Monitor Metrics"]
+            AUDIT["Audit Trail<br/>AWS: CloudTrail<br/>GCP: Cloud Audit Logs<br/>Azure: Activity Log"]
+        end
+        
+        subgraph QUERY["Query & Analytics"]
+            QUERY_SVC["Query Engine<br/>AWS: Athena<br/>GCP: BigQuery<br/>Azure: Synapse Serverless SQL"]
+            ANALYTICS["Analytics Platforms<br/>AWS: EMR/Redshift Spectrum<br/>GCP: Dataproc/BigQuery<br/>Azure: Databricks/Synapse"]
+        end
+        
+        subgraph SECURITY["Security Controls"]
+            NETWORK["Network Security<br/>AWS: VPC Endpoints<br/>GCP: Private Service Connect<br/>Azure: Private Endpoints"]
+            ACCESS["Access Control<br/>- Bucket/Container policies<br/>- IAM/RBAC policies<br/>- Public access blocked"]
+            COMPLIANCE["Compliance<br/>- Encryption in transit (HTTPS/TLS)<br/>- Encryption at rest<br/>- Access logging"]
+        end
+    end
+    
+    %% Data Flow Connections
+    S3 -->|Consistent Prefix| PREFIX
+    S3 -->|Protected by| ENCRYPT
+    S3 -->|Protected by| VERSION
+    
+    CRAWLER_SVC -->|Scans| S3
+    CRAWLER_SVC -->|Uses| ROLE
+    CRAWLER_SVC -->|Applies| MERGE
+    CRAWLER_SVC -->|Applies| POLICY
+    CRAWLER_SVC -->|Creates/Updates| CATALOG_DB
+    
+    CATALOG_DB -->|Contains| SCHEMA
+    CATALOG_DB -->|Defines| TABLE
+    TABLE -->|Points to| PREFIX
+    
+    ROLE -->|Grants| PERMS
+    
+    CRAWLER_SVC -->|Logs to| LOGS
+    CRAWLER_SVC -->|Metrics to| METRICS
+    PERMS -->|Audited by| AUDIT
+    
+    QUERY_SVC -->|Queries| TABLE
+    ANALYTICS -->|Uses| CATALOG_DB
+    
+    S3 -->|Secured by| NETWORK
+    S3 -->|Enforces| ACCESS
+    CATALOG_DB -->|Complies with| COMPLIANCE
+    
+    %% Styling
+    classDef awsStyle fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#232F3E
+    classDef gcpStyle fill:#4285F4,stroke:#1a73e8,stroke-width:2px,color:#fff
+    classDef azureStyle fill:#0078D4,stroke:#0053a6,stroke-width:2px,color:#fff
+    classDef universalStyle fill:#2ea44f,stroke:#1a7f37,stroke-width:3px,color:#fff
+    classDef storageStyle fill:#ffd700,stroke:#b8860b,stroke-width:2px,color:#000
+    classDef securityStyle fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px,color:#fff
+    
+    class UNIVERSAL universalStyle
+    class S3,PREFIX,ENCRYPT,VERSION storageStyle
+    class SECURITY,NETWORK,ACCESS,COMPLIANCE securityStyle
+        </div>
+
+        <div class="info-box">
+            <h3>🔑 Key Design Principles</h3>
+            <ul>
+                <li><strong>Consistent Prefix Structure:</strong> All data files must be in a single, flat prefix (e.g., <code>third-party-data/</code>)</li>
+                <li><strong>Schema Merge Policy:</strong> Combine compatible schemas to enforce single table creation</li>
+                <li><strong>Similarity Threshold:</strong> 0.8 recommended for balanced grouping</li>
+                <li><strong>Format Consistency:</strong> All files must use the same format and compression</li>
+                <li><strong>Incremental Scanning:</strong> Only scan new or changed data for efficiency</li>
+            </ul>
+        </div>
+
+        <h2>Component Mapping Legend</h2>
+        <div class="legend">
+            <div class="legend-item">
+                <strong>🗄️ Object Storage</strong>
+                <div>AWS: S3</div>
+                <div>GCP: Cloud Storage</div>
+                <div>Azure: Blob Storage</div>
+            </div>
+            <div class="legend-item">
+                <strong>📊 Data Catalog</strong>
+                <div>AWS: Glue Data Catalog</div>
+                <div>GCP: Dataplex/Data Catalog</div>
+                <div>Azure: Purview</div>
+            </div>
+            <div class="legend-item">
+                <strong>🔍 Schema Discovery</strong>
+                <div>AWS: Glue Crawler</div>
+                <div>GCP: Dataplex Auto Discovery</div>
+                <div>Azure: Purview Scanner</div>
+            </div>
+            <div class="legend-item">
+                <strong>🔐 Identity Management</strong>
+                <div>AWS: IAM Roles</div>
+                <div>GCP: Service Accounts</div>
+                <div>Azure: Managed Identities</div>
+            </div>
+            <div class="legend-item">
+                <strong>🔎 Query Engine</strong>
+                <div>AWS: Athena</div>
+                <div>GCP: BigQuery</div>
+                <div>Azure: Synapse Serverless</div>
+            </div>
+            <div class="legend-item">
+                <strong>📈 Analytics Platform</strong>
+                <div>AWS: EMR, Redshift Spectrum</div>
+                <div>GCP: Dataproc, BigQuery</div>
+                <div>Azure: Databricks, Synapse</div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Universal Infrastructure Diagram v1.0</strong></p>
+            <p>Supporting AWS, Google Cloud Platform, and Microsoft Azure</p>
+            <p>For more details, see <code>INFRASTRUCTURE_DIAGRAM.md</code> and <code>map-diagram-infra.mermaid</code></p>
+        </footer>
+    </div>
+</body>
+</html>

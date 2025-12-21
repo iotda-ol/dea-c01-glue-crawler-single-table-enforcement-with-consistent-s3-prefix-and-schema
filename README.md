@@ -26,6 +26,7 @@ This solution provides a **production-ready approach** to enforce single table c
 - **Sample Data Generation**: Python scripts to generate test data with consistent schema
 - **S3 Upload Automation**: Tools to upload data with proper prefix structure
 - **Comprehensive Documentation**: Architecture, best practices, and troubleshooting guides
+- **Multi-Cloud Architecture Diagram**: Universal infrastructure diagram mapping AWS, GCP, and Azure components
 - **DEA-C01 Aligned**: Follows AWS Data Engineer certification best practices
 
 ## 🏗️ Architecture
@@ -54,6 +55,14 @@ This solution provides a **production-ready approach** to enforce single table c
 │                       └────────────────────┘                │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+### 🌐 Universal Multi-Cloud Architecture
+
+See the **[Universal Infrastructure Diagram](INFRASTRUCTURE_DIAGRAM.md)** for a comprehensive view of how this architecture maps to AWS, GCP, and Azure components. The diagram shows equivalent services and migration paths between cloud providers.
+
+- **📊 Interactive Diagram**: Open `diagram-viewer.html` in a browser
+- **📝 Mermaid Source**: `map-diagram-infra.mermaid`
+- **📚 Documentation**: `INFRASTRUCTURE_DIAGRAM.md`
 
 ## 📋 Prerequisites
 
@@ -141,6 +150,12 @@ aws glue get-tables --database-name YOUR_DATABASE_NAME | jq '.TableList[].Name'
 │   ├── DEA_C01_BEST_PRACTICES.md  # Exam-aligned best practices
 │   └── TROUBLESHOOTING.md     # Troubleshooting guide
 │
+├── map-diagram-infra.mermaid  # Universal multi-cloud infrastructure diagram (source)
+├── INFRASTRUCTURE_DIAGRAM.md  # Comprehensive diagram guide and documentation
+├── DIAGRAM_PREVIEW.md         # GitHub-rendered diagram preview
+├── CLOUD_MAPPING_REFERENCE.md # Quick reference for cloud component mapping
+├── diagram-viewer.html        # Interactive diagram viewer (open in browser)
+│
 └── README.md                  # This file
 ```
 
@@ -189,11 +204,23 @@ configuration = jsonencode({
 3. **[MULTIPLE_TABLES_CAUSES.md](docs/MULTIPLE_TABLES_CAUSES.md)** - Why multiple tables occur and how to prevent it
 4. **[DEA_C01_BEST_PRACTICES.md](docs/DEA_C01_BEST_PRACTICES.md)** - AWS certification best practices
 5. **[TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+6. **[INFRASTRUCTURE_DIAGRAM.md](INFRASTRUCTURE_DIAGRAM.md)** - Universal multi-cloud architecture diagram guide
+
+### Multi-Cloud Architecture
+
+- **[Universal Infrastructure Diagram](INFRASTRUCTURE_DIAGRAM.md)** - Comprehensive diagram showing component mapping across AWS, GCP, and Azure
+- **[Cloud Mapping Quick Reference](CLOUD_MAPPING_REFERENCE.md)** - Quick reference card for cloud service equivalents, costs, and migration paths
+- **[Diagram Preview](DIAGRAM_PREVIEW.md)** - GitHub-rendered Mermaid diagram preview
+- **Interactive Viewer** - Open `diagram-viewer.html` in a browser to see the live diagram
+- **Mermaid Source** - `map-diagram-infra.mermaid` contains the diagram source code with extensive annotations
 
 ### Quick Links
 
 - [Prerequisites and Installation](docs/SETUP.md#prerequisites)
 - [Common Causes of Multiple Tables](docs/MULTIPLE_TABLES_CAUSES.md#table-of-contents)
+- [Multi-Cloud Component Mapping](CLOUD_MAPPING_REFERENCE.md#-cloud-service-mapping)
+- [Cost Comparison](CLOUD_MAPPING_REFERENCE.md#-cost-comparison-usd-approximate)
+- [Migration Paths](CLOUD_MAPPING_REFERENCE.md#-migration-paths)
 - [Performance Optimization](docs/DEA_C01_BEST_PRACTICES.md#performance-optimization)
 - [Security Best Practices](docs/DEA_C01_BEST_PRACTICES.md#security-and-compliance)
 - [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
