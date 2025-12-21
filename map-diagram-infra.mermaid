@@ -1,0 +1,306 @@
+%% Universal Infrastructure Composer - Multi-Cloud Data Catalog and ETL Architecture
+%% This diagram shows component mapping across AWS, GCP, and Azure
+
+graph TB
+    subgraph UNIVERSAL["🌐 Universal Architecture Components"]
+        direction TB
+        
+        subgraph STORAGE["Object Storage Layer"]
+            S3["AWS: S3 Bucket<br/>GCP: Cloud Storage Bucket<br/>Azure: Blob Storage"]
+            PREFIX["Consistent Prefix Structure<br/>third-party-data/"]
+            ENCRYPT["Encryption at Rest<br/>AWS: AES256/KMS<br/>GCP: CMEK/Google-managed<br/>Azure: SSE/Customer-managed"]
+            VERSION["Versioning<br/>All: Enabled for data protection"]
+        end
+        
+        subgraph CATALOG["Data Catalog Layer"]
+            CATALOG_DB["Metadata Database<br/>AWS: Glue Data Catalog<br/>GCP: Dataplex/Data Catalog<br/>Azure: Purview Data Catalog"]
+            SCHEMA["Schema Registry<br/>- Column definitions<br/>- Data types<br/>- Metadata"]
+            TABLE["Single Table Metadata<br/>Format: CSV/JSON/Parquet<br/>Compression: gzip/snappy"]
+        end
+        
+        subgraph CRAWLER["Schema Discovery & ETL"]
+            CRAWLER_SVC["Crawler/Discovery Service<br/>AWS: Glue Crawler<br/>GCP: Dataplex Auto Discovery<br/>Azure: Purview Scanner"]
+            MERGE["Schema Merge Policy<br/>- CombineCompatibleSchemas<br/>- MergeNewColumns<br/>- Similarity Threshold: 0.8"]
+            POLICY["Recrawl Policy<br/>- Incremental scan only<br/>- Skip unchanged data"]
+        end
+        
+        subgraph IAM["Identity & Access Management"]
+            ROLE["Service Role/Identity<br/>AWS: IAM Role<br/>GCP: Service Account<br/>Azure: Managed Identity"]
+            PERMS["Permissions<br/>- Read/Write Storage<br/>- Catalog Access<br/>- Logging"]
+        end
+        
+        subgraph MONITORING["Observability"]
+            LOGS["Logging Service<br/>AWS: CloudWatch Logs<br/>GCP: Cloud Logging<br/>Azure: Monitor Logs"]
+            METRICS["Metrics & Monitoring<br/>AWS: CloudWatch<br/>GCP: Cloud Monitoring<br/>Azure: Monitor Metrics"]
+            AUDIT["Audit Trail<br/>AWS: CloudTrail<br/>GCP: Cloud Audit Logs<br/>Azure: Activity Log"]
+        end
+        
+        subgraph QUERY["Query & Analytics"]
+            QUERY_SVC["Query Engine<br/>AWS: Athena<br/>GCP: BigQuery<br/>Azure: Synapse Serverless SQL"]
+            ANALYTICS["Analytics Platforms<br/>AWS: EMR/Redshift Spectrum<br/>GCP: Dataproc/BigQuery<br/>Azure: Databricks/Synapse"]
+        end
+        
+        subgraph SECURITY["Security Controls"]
+            NETWORK["Network Security<br/>AWS: VPC Endpoints<br/>GCP: Private Service Connect<br/>Azure: Private Endpoints"]
+            ACCESS["Access Control<br/>- Bucket/Container policies<br/>- IAM/RBAC policies<br/>- Public access blocked"]
+            COMPLIANCE["Compliance<br/>- Encryption in transit (HTTPS/TLS)<br/>- Encryption at rest<br/>- Access logging"]
+        end
+    end
+    
+    %% Data Flow Connections
+    S3 -->|Consistent Prefix| PREFIX
+    S3 -->|Protected by| ENCRYPT
+    S3 -->|Protected by| VERSION
+    
+    CRAWLER_SVC -->|Scans| S3
+    CRAWLER_SVC -->|Uses| ROLE
+    CRAWLER_SVC -->|Applies| MERGE
+    CRAWLER_SVC -->|Applies| POLICY
+    CRAWLER_SVC -->|Creates/Updates| CATALOG_DB
+    
+    CATALOG_DB -->|Contains| SCHEMA
+    CATALOG_DB -->|Defines| TABLE
+    TABLE -->|Points to| PREFIX
+    
+    ROLE -->|Grants| PERMS
+    
+    CRAWLER_SVC -->|Logs to| LOGS
+    CRAWLER_SVC -->|Metrics to| METRICS
+    PERMS -->|Audited by| AUDIT
+    
+    QUERY_SVC -->|Queries| TABLE
+    ANALYTICS -->|Uses| CATALOG_DB
+    
+    S3 -->|Secured by| NETWORK
+    S3 -->|Enforces| ACCESS
+    CATALOG_DB -->|Complies with| COMPLIANCE
+    
+    %% Styling
+    classDef awsStyle fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#232F3E
+    classDef gcpStyle fill:#4285F4,stroke:#1a73e8,stroke-width:2px,color:#fff
+    classDef azureStyle fill:#0078D4,stroke:#0053a6,stroke-width:2px,color:#fff
+    classDef universalStyle fill:#2ea44f,stroke:#1a7f37,stroke-width:3px,color:#fff
+    classDef storageStyle fill:#ffd700,stroke:#b8860b,stroke-width:2px,color:#000
+    classDef securityStyle fill:#ff6b6b,stroke:#c92a2a,stroke-width:2px,color:#fff
+    
+    class UNIVERSAL universalStyle
+    class S3,PREFIX,ENCRYPT,VERSION storageStyle
+    class SECURITY,NETWORK,ACCESS,COMPLIANCE securityStyle
+
+%% ============================================================================
+%% COMPONENT MAPPING TABLE
+%% ============================================================================
+
+%% Component: Object Storage
+%% AWS: Amazon S3 (Simple Storage Service)
+%% GCP: Google Cloud Storage
+%% Azure: Azure Blob Storage
+%% Purpose: Store raw data files with consistent prefix structure
+%% Key Features: Versioning, encryption, lifecycle policies
+
+%% Component: Data Catalog
+%% AWS: AWS Glue Data Catalog
+%% GCP: Google Cloud Dataplex / Data Catalog
+%% Azure: Microsoft Purview Data Catalog
+%% Purpose: Centralized metadata repository for schema and table definitions
+%% Key Features: Schema versioning, lineage tracking, search
+
+%% Component: Schema Discovery/Crawler
+%% AWS: AWS Glue Crawler
+%% GCP: Dataplex Auto Discovery / Cloud Data Fusion
+%% Azure: Microsoft Purview Scanner / Azure Data Factory
+%% Purpose: Automatically discover schema and create/update catalog entries
+%% Key Features: Incremental scan, schema evolution, partitioning
+
+%% Component: Identity & Access Management
+%% AWS: IAM Roles with assume role policy
+%% GCP: Service Accounts with IAM bindings
+%% Azure: Managed Identities with RBAC
+%% Purpose: Grant service-level permissions without credentials
+%% Key Features: Least privilege, temporary credentials, audit trail
+
+%% Component: Query Engine
+%% AWS: Amazon Athena (serverless SQL)
+%% GCP: BigQuery (serverless analytics)
+%% Azure: Azure Synapse Serverless SQL Pool
+%% Purpose: Query data using SQL without managing infrastructure
+%% Key Features: Pay-per-query, schema-on-read, ANSI SQL
+
+%% Component: Analytics Platform
+%% AWS: Amazon EMR (managed Hadoop/Spark) / Redshift Spectrum
+%% GCP: Cloud Dataproc (managed Hadoop/Spark) / BigQuery
+%% Azure: Azure Databricks / Azure Synapse Analytics
+%% Purpose: Large-scale data processing and analytics
+%% Key Features: Auto-scaling, multiple engines, integration with catalog
+
+%% Component: Logging
+%% AWS: Amazon CloudWatch Logs
+%% GCP: Google Cloud Logging (formerly Stackdriver)
+%% Azure: Azure Monitor Logs (Log Analytics)
+%% Purpose: Centralized log aggregation and analysis
+%% Key Features: Real-time monitoring, alerting, retention policies
+
+%% Component: Monitoring & Metrics
+%% AWS: Amazon CloudWatch
+%% GCP: Google Cloud Monitoring (formerly Stackdriver)
+%% Azure: Azure Monitor
+%% Purpose: Operational metrics and dashboards
+%% Key Features: Custom metrics, alarms, dashboards
+
+%% Component: Audit Trail
+%% AWS: AWS CloudTrail
+%% GCP: Google Cloud Audit Logs
+%% Azure: Azure Activity Log / Monitor
+%% Purpose: Track all API calls and changes for compliance
+%% Key Features: Immutable logs, retention, integration with SIEM
+
+%% Component: Network Isolation
+%% AWS: VPC Endpoints (Gateway & Interface)
+%% GCP: Private Service Connect / Private Google Access
+%% Azure: Private Endpoints / Service Endpoints
+%% Purpose: Access cloud services without internet exposure
+%% Key Features: Private connectivity, reduced data transfer costs
+
+%% ============================================================================
+%% CRITICAL CONFIGURATION FOR SINGLE TABLE ENFORCEMENT
+%% ============================================================================
+
+%% 1. CONSISTENT PREFIX STRUCTURE (All Clouds)
+%%    ✅ Correct: storage://bucket/third-party-data/file1.csv
+%%    ✅ Correct: storage://bucket/third-party-data/file2.csv
+%%    ❌ Wrong:   storage://bucket/data/2024/01/file1.csv (creates multiple tables)
+%%    ❌ Wrong:   storage://bucket/vendor-a/file1.csv (creates multiple tables)
+
+%% 2. SCHEMA MERGE POLICY
+%%    AWS Glue: CombineCompatibleSchemas + MergeNewColumns
+%%    GCP Dataplex: Auto merge with schema evolution enabled
+%%    Azure Purview: Enable schema drift handling in scan rules
+
+%% 3. SIMILARITY THRESHOLD
+%%    Recommended: 0.8 (balances grouping vs. accuracy)
+%%    Lower (0.7): More aggressive grouping, may merge dissimilar schemas
+%%    Higher (0.9): Conservative, may create separate tables for minor differences
+
+%% 4. FILE FORMAT CONSISTENCY
+%%    All files must use same format: CSV, JSON, or Parquet
+%%    All files must use same compression: none, gzip, snappy, etc.
+%%    Mixed formats or compression will create multiple tables
+
+%% 5. RECRAWL POLICY
+%%    AWS: CRAWL_NEW_FOLDERS_ONLY for efficiency
+%%    GCP: Incremental discovery with change detection
+%%    Azure: Incremental scan with delta detection
+
+%% ============================================================================
+%% TERRAFORM/IaC EQUIVALENTS
+%% ============================================================================
+
+%% Terraform Provider: AWS
+%% Resource: aws_s3_bucket, aws_glue_crawler, aws_glue_catalog_database
+%% Module: terraform-aws-modules/s3-bucket, terraform-aws-glue
+
+%% Terraform Provider: Google Cloud
+%% Resource: google_storage_bucket, google_dataplex_lake, google_data_catalog_entry
+%% Module: terraform-google-modules/cloud-storage, terraform-google-modules/dataplex
+
+%% Terraform Provider: Azure
+%% Resource: azurerm_storage_account, azurerm_purview_account, azurerm_data_factory
+%% Module: Azure Verified Modules (AVM)
+
+%% Pulumi: Available for all three clouds with unified API
+%% CloudFormation: AWS only
+%% ARM/Bicep: Azure only
+%% Deployment Manager: GCP only
+
+%% ============================================================================
+%% COST COMPARISON (Approximate, varies by region and usage)
+%% ============================================================================
+
+%% Storage (per GB/month):
+%% AWS S3 Standard: $0.023
+%% GCP Standard Storage: $0.020
+%% Azure Blob Hot: $0.018
+
+%% Catalog:
+%% AWS Glue: First 1M objects free, then $1 per 100K
+%% GCP Dataplex: Included with usage
+%% Azure Purview: $0.28 per capacity unit per hour
+
+%% Crawler/Scanner (per hour):
+%% AWS Glue Crawler: $0.44 per DPU-hour
+%% GCP Dataplex Discovery: Included with Dataplex
+%% Azure Purview Scanner: Included in capacity unit pricing
+
+%% Query:
+%% AWS Athena: $5 per TB scanned
+%% GCP BigQuery: $5 per TB processed (first 1TB/month free)
+%% Azure Synapse Serverless: $5 per TB processed
+
+%% ============================================================================
+%% MIGRATION PATHS
+%% ============================================================================
+
+%% AWS → GCP:
+%% 1. Use Storage Transfer Service to copy S3 → GCS
+%% 2. Export Glue Catalog to JSON
+%% 3. Import to Dataplex using API
+%% 4. Rewrite Glue ETL jobs to Dataflow/Dataproc
+
+%% AWS → Azure:
+%% 1. Use AzCopy or Data Factory to copy S3 → Blob Storage
+%% 2. Export Glue Catalog metadata
+%% 3. Create equivalent Purview assets
+%% 4. Migrate Glue jobs to Azure Data Factory/Databricks
+
+%% GCP → AWS:
+%% 1. Use gsutil or Storage Transfer to copy GCS → S3
+%% 2. Export BigQuery/Dataplex schemas
+%% 3. Create Glue Catalog tables via API/Terraform
+%% 4. Rewrite Dataflow to Glue ETL
+
+%% Azure → AWS:
+%% 1. Use AzCopy or AWS DataSync to copy Blob → S3
+%% 2. Export Purview metadata
+%% 3. Populate Glue Catalog
+%% 4. Migrate ADF pipelines to Glue workflows
+
+%% ============================================================================
+%% BEST PRACTICES (Universal across all clouds)
+%% ============================================================================
+
+%% 1. Data Organization:
+%%    - Use consistent, flat prefix structure (no date-based subdirectories)
+%%    - Single format per dataset (CSV, JSON, or Parquet)
+%%    - Consistent compression type across all files
+%%    - UTF-8 encoding for text files
+
+%% 2. Security:
+%%    - Enable encryption at rest (provider-managed or customer-managed keys)
+%%    - Enforce encryption in transit (HTTPS/TLS only)
+%%    - Use service identities, not user credentials
+%%    - Enable audit logging for all access
+%%    - Block public access by default
+
+%% 3. Schema Management:
+%%    - Enable schema evolution/merge
+%%    - Use backward-compatible changes only
+%%    - Version control schema changes
+%%    - Document breaking changes
+
+%% 4. Cost Optimization:
+%%    - Use incremental/delta scanning
+%%    - Compress data files (gzip for CSV, snappy for Parquet)
+%%    - Set appropriate lifecycle policies
+%%    - Use reserved capacity for predictable workloads
+%%    - Clean up unused tables and data
+
+%% 5. Monitoring & Operations:
+%%    - Set up alerting for crawler/scanner failures
+%%    - Monitor schema drift
+%%    - Track data quality metrics
+%%    - Implement data validation pipelines
+%%    - Regular backup of metadata
+
+%% ============================================================================
+%% END OF UNIVERSAL INFRASTRUCTURE DIAGRAM
+%% ============================================================================
