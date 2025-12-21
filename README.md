@@ -150,8 +150,10 @@ aws glue get-tables --database-name YOUR_DATABASE_NAME | jq '.TableList[].Name'
 │   ├── DEA_C01_BEST_PRACTICES.md  # Exam-aligned best practices
 │   └── TROUBLESHOOTING.md     # Troubleshooting guide
 │
-├── map-diagram-infra.mermaid  # Universal multi-cloud infrastructure diagram
-├── INFRASTRUCTURE_DIAGRAM.md  # Diagram guide and cloud component mapping
+├── map-diagram-infra.mermaid  # Universal multi-cloud infrastructure diagram (source)
+├── INFRASTRUCTURE_DIAGRAM.md  # Comprehensive diagram guide and documentation
+├── DIAGRAM_PREVIEW.md         # GitHub-rendered diagram preview
+├── CLOUD_MAPPING_REFERENCE.md # Quick reference for cloud component mapping
 ├── diagram-viewer.html        # Interactive diagram viewer (open in browser)
 │
 └── README.md                  # This file
@@ -207,13 +209,18 @@ configuration = jsonencode({
 ### Multi-Cloud Architecture
 
 - **[Universal Infrastructure Diagram](INFRASTRUCTURE_DIAGRAM.md)** - Comprehensive diagram showing component mapping across AWS, GCP, and Azure
+- **[Cloud Mapping Quick Reference](CLOUD_MAPPING_REFERENCE.md)** - Quick reference card for cloud service equivalents, costs, and migration paths
+- **[Diagram Preview](DIAGRAM_PREVIEW.md)** - GitHub-rendered Mermaid diagram preview
 - **Interactive Viewer** - Open `diagram-viewer.html` in a browser to see the live diagram
-- **Mermaid Source** - `map-diagram-infra.mermaid` contains the diagram source code
+- **Mermaid Source** - `map-diagram-infra.mermaid` contains the diagram source code with extensive annotations
 
 ### Quick Links
 
 - [Prerequisites and Installation](docs/SETUP.md#prerequisites)
 - [Common Causes of Multiple Tables](docs/MULTIPLE_TABLES_CAUSES.md#table-of-contents)
+- [Multi-Cloud Component Mapping](CLOUD_MAPPING_REFERENCE.md#-cloud-service-mapping)
+- [Cost Comparison](CLOUD_MAPPING_REFERENCE.md#-cost-comparison-usd-approximate)
+- [Migration Paths](CLOUD_MAPPING_REFERENCE.md#-migration-paths)
 - [Performance Optimization](docs/DEA_C01_BEST_PRACTICES.md#performance-optimization)
 - [Security Best Practices](docs/DEA_C01_BEST_PRACTICES.md#security-and-compliance)
 - [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
